@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 // pachage we need for encrypt level 2:
 const encrypt = require("mongoose-encryption");
 
-// package we need for hash 
+// package we need for hash level 3
 const md5 = require('md5');
 
 const app = express();
@@ -46,7 +46,7 @@ app.route('/login')
 })
 .post((req,res)=>{
     const username = req.body.username;
-    const password = req.body.password;
+    const password = md5(req.body.password);
     console.log(username+"\n"+password);
     User.findOne({username: username})
   .then((user)=>{
@@ -66,7 +66,7 @@ app.route('/register')
 .post((req,res)=>{
     const newUser = new User({
         username: req.body.username,
-        password: req.body.password
+        password: md5(req.body.password)
     });
     newUser.save()
     .then((user)=>{
