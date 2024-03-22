@@ -9,6 +9,10 @@ const encrypt = require("mongoose-encryption");
 // package we need for hash level 3
 const md5 = require('md5');
 
+// pachage we need for salting hash level 4
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 const app = express();
 
 app
@@ -29,9 +33,9 @@ const userSchema = mongoose.Schema({
     password: String
 });
 
-
-const secret = process.env.SECRETS
-
+// encrypt level 1:
+// const secret = process.env.SECRETS
+// userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] });
 
 const User = mongoose.model("user", userSchema);
 
@@ -46,34 +50,41 @@ app.route('/login')
 })
 .post((req,res)=>{
     const username = req.body.username;
-    const password = md5(req.body.password);
+    const password = req.body.password;  
+
     console.log(username+"\n"+password);
     User.findOne({username: username})
   .then((user)=>{
     if(!user){res.redirect('login')}
     else{
-        if(password==user.password){res.render('secrets');}
-        else{res.redirect('login')}
+        bcrypt.compare(password,user.password,(err,result)=>{
+            if(result===true){res.render('secrets');console.log("in");}
+            else{console.log("wrong password");}
+        }) 
     }
 })
   .catch((err)=>console.log(err+"not in"));
 })
 
 app.route('/register')
+
 .get((req,res)=>{
     res.render('register');
 })
 .post((req,res)=>{
+    bcrypt.hash(req.body.password,saltRounds,((err,hash)=>{
     const newUser = new User({
         username: req.body.username,
-        password: md5(req.body.password)
-    });
+        password: hash
+    })
     newUser.save()
     .then((user)=>{
         console.log(user)
         res.render('secrets')})
     .catch((error)=> {console.log(error);})
     })
+    )})   
+
 
 app.route('/secrets')
     .get((req,res)=>{
