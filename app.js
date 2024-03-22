@@ -13,6 +13,13 @@ const md5 = require('md5');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+// packages we need for cookies and session lvl 5
+// npm i passport passport-local passport-local-mongoose express-session
+const session = require('express-session');
+const passport = require('passport');//making session private
+const LocalStrategy = require('passport-local').Strategy;
+const passportLocalMongoose = require('passport-local-mongoose');//making session private
+
 const app = express();
 
 app
@@ -49,21 +56,7 @@ app.route('/login')
     res.render('login');
 })
 .post((req,res)=>{
-    const username = req.body.username;
-    const password = req.body.password;  
 
-    console.log(username+"\n"+password);
-    User.findOne({username: username})
-  .then((user)=>{
-    if(!user){res.redirect('login')}
-    else{
-        bcrypt.compare(password,user.password,(err,result)=>{
-            if(result===true){res.render('secrets');console.log("in");}
-            else{console.log("wrong password");}
-        }) 
-    }
-})
-  .catch((err)=>console.log(err+"not in"));
 })
 
 app.route('/register')
@@ -72,23 +65,7 @@ app.route('/register')
     res.render('register');
 })
 .post((req,res)=>{
-    bcrypt.hash(req.body.password,saltRounds,((err,hash)=>{
-    const newUser = new User({
-        username: req.body.username,
-        password: hash
-    })
-    newUser.save()
-    .then((user)=>{
-        console.log(user)
-        res.render('secrets')})
-    .catch((error)=> {console.log(error);})
-    })
-    )})   
 
-
-app.route('/secrets')
-    .get((req,res)=>{
-        res.render('secrets');
     })
 
 app.listen(3000,(req,res)=>{
