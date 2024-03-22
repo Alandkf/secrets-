@@ -3,8 +3,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require("mongoose");
-// pachage we need
+// pachage we need for encrypt level 2:
 const encrypt = require("mongoose-encryption");
+
+// package we need for hash 
+const md5 = require('md5');
 
 const app = express();
 
@@ -29,7 +32,6 @@ const userSchema = mongoose.Schema({
 
 const secret = process.env.SECRETS
 
-userSchema.plugin(encrypt, { secret: secret, encryptedFields: ['password'] });
 
 const User = mongoose.model("user", userSchema);
 
