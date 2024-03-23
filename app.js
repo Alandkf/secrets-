@@ -145,8 +145,6 @@ app.get("/secrets", async (req, res) => {
   }
 });
 
-
-
 app.get("/logout", (req, res) => {
   req.logout((err) => {
     if (err) {
@@ -196,9 +194,6 @@ app.post("/submit", (req, res) => {
       res.status(500).send("Internal Server Error");
     });
 });
-
-
-
 
 app.listen(3000, (req, res) => {
   console.log("server is running on port 3000");
