@@ -1,7 +1,14 @@
+
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+
+require('dotenv').config();
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
@@ -10,6 +17,7 @@ const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const findOrCreate = require("mongoose-findOrCreate");
 
 const app = express();
+
 
 app
   .use(bodyParser.urlencoded({ extended: true }))
@@ -46,8 +54,13 @@ const userSchema = mongoose.Schema({
   secret: String,
 });
 
+
 userSchema.plugin(passportLocalMongoose);
 userSchema.plugin(findOrCreate);
+
+
+userSchema.plugin(encrypt, { secret: process.env.SECRETS, encryptedFields: ['password'] });
+
 
 const User = mongoose.model("user", userSchema);
 
