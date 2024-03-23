@@ -199,21 +199,6 @@ app.post("/submit", (req, res) => {
 
 
 
-  //   if (!foundUser) {
-  //     console.error("User not found");
-  //     return res.status(404).send("User not found");
-  //   } else {
-  //   foundUser.save((err) => {
-  //     if (err) {
-  //       console.error("Error saving secret:", err);
-  //       return res.status(500).send("Internal Server Error");
-  //     }
-  //     console.log("Secret saved successfully");
-  //     res.redirect("/secrets");
-    // });
-  // }
-  // });
-
 
 app.listen(3000, (req, res) => {
   console.log("server is running on port 3000");
